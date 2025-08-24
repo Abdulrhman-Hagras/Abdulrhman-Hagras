@@ -1,0 +1,85 @@
+{% comment %}
+  Custom Banner Section - Pixel Perfect with the figma design
+{% endcomment %}
+<section class="custom-banner-section">
+  <header class="banner-top-bar">
+    <div class="hamburger-menu">
+      <img
+        src="{{ 'menu_bar.svg'| asset_url}}"
+        alt=""
+        class="menu-icon"
+        width="20"
+        height="13"
+      >
+    </div>
+    <div class="brand-logo">
+      <img
+        src="{{ 'logo.svg'| asset_url}}"
+        alt=""
+        class="logo-icon"
+        width="153"
+        height="20"
+      >
+    </div>
+    <div class="tagline">
+      <p>
+        {{ section.settings.tagline_text }}
+      </p>
+    </div>
+    <a
+      href="{{ section.settings.choose_gift_link }}"
+      class="btn btn-animated choose-gift"
+    >
+      <p>choose gift</p>
+      <img
+        src="{{ 'arrow.svg'| asset_url}}"
+        alt=""
+        class="menu-icon"
+        width="26"
+        height="12"
+      >
+    </a>
+  </header>
+  <div class="banner-content">
+    <div class="banner-illustration">
+      <img
+        src="{{ 'Frame_1.svg'| asset_url}}"
+        alt=""
+        class="illustration-frame-1"
+        width="1440"
+        height="390"
+        loading="lazy"
+      >
+    </div>
+    <div class="banner-bottom-row">
+      <div class="banner-main-content">
+        <h1 class="main-heading">The Gift Guide</h1>
+        <p class="description">
+          Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts
+          to delight your loved ones this holiday season.
+        </p>
+        <a href="{{ section.settings.shop_now_link }}" class="btn btn-animated shop-now">
+          <p>shop now</p>
+          <img
+            src="{{ 'arrow white.svg'| asset_url}}"
+            alt=""
+            class="arrow-icon"
+            width="26"
+            height="12"
+          >
+        </a>
+      </div>
+      <img
+        src="{{ 'Frame_2.svg'| asset_url}}"
+        alt=""
+        class="illustration-frame-2"
+        width="890"
+        height="402"
+        loading="lazy"
+      >
+    </div>
+    <div class="bottom-banner">
+      <p>SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL</p>
+    </div>
+  </div>
+</section>
