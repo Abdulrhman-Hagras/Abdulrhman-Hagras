@@ -5,8 +5,8 @@
   <header class="banner-top-bar">
     <div class="hamburger-menu">
       <img
-        src="{{ 'menu_bar.svg'| asset_url}}"
-        alt=""
+        src="{{ 'menu_bar.svg' | asset_url }}"
+        alt="Menu"
         class="menu-icon"
         width="20"
         height="13"
@@ -14,27 +14,25 @@
     </div>
     <div class="brand-logo">
       <img
-        src="{{ 'logo.svg'| asset_url}}"
-        alt=""
+        src="{{ 'logo.svg' | asset_url }}"
+        alt="{{ section.settings.brand_text }}"
         class="logo-icon"
         width="153"
         height="20"
       >
     </div>
     <div class="tagline">
-      <p>
-        {{ section.settings.tagline_text }}
-      </p>
+      <p>{{ section.settings.tagline_text }}</p>
     </div>
     <a
       href="{{ section.settings.choose_gift_link }}"
       class="btn btn-animated choose-gift"
     >
-      <p>choose gift</p>
+      <span>{{ section.settings.choose_gift_text }}</span>
       <img
-        src="{{ 'arrow.svg'| asset_url}}"
-        alt=""
-        class="menu-icon"
+        src="{{ 'arrow.svg' | asset_url }}"
+        alt="Arrow"
+        class="arrow-icon"
         width="26"
         height="12"
       >
@@ -43,8 +41,8 @@
   <div class="banner-content">
     <div class="banner-illustration">
       <img
-        src="{{ 'Frame_1.svg'| asset_url}}"
-        alt=""
+        src="{{ 'Frame_1.svg' | asset_url }}"
+        alt="Decorative background illustration"
         class="illustration-frame-1"
         width="1440"
         height="390"
@@ -53,16 +51,13 @@
     </div>
     <div class="banner-bottom-row">
       <div class="banner-main-content">
-        <h1 class="main-heading">The Gift Guide</h1>
-        <p class="description">
-          Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts
-          to delight your loved ones this holiday season.
-        </p>
+        <h1 class="main-heading">{{ section.settings.main_heading }}</h1>
+        <p class="description">{{ section.settings.description_text }}</p>
         <a href="{{ section.settings.shop_now_link }}" class="btn btn-animated shop-now">
-          <p>shop now</p>
+          <span>{{ section.settings.shop_now_text }}</span>
           <img
-            src="{{ 'arrow white.svg'| asset_url}}"
-            alt=""
+            src="{{ 'arrow white.svg' | asset_url }}"
+            alt="Arrow"
             class="arrow-icon"
             width="26"
             height="12"
@@ -70,8 +65,8 @@
         </a>
       </div>
       <img
-        src="{{ 'Frame_2.svg'| asset_url}}"
-        alt=""
+        src="{{ 'Frame_2.svg' | asset_url }}"
+        alt="Gift illustration"
         class="illustration-frame-2"
         width="890"
         height="402"
@@ -79,11 +74,233 @@
       >
     </div>
     <div class="bottom-banner">
-      <p>SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL</p>
+      <p>{{ section.settings.bottom_banner_text }}</p>
     </div>
   </div>
 </section>
 
+<style>
+  /* Import Jost font */
+  @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
+
+  :root {
+    --font-family: "Jost", sans-serif;
+    --color-white: #f5f5f5;
+    --color-yellow: #fff544;
+    --color-black: #000;
+    --color-background: #fff;
+  }
+
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    background: none;
+    scroll-behavior: smooth;
+  }
+
+  .custom-banner-section {
+    position: relative;
+    background: var(--color-background);
+    font-family: var(--font-family);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top Header Bar */
+  .menu-icon {
+    display:none
+    }
+  .banner-top-bar {
+    height: 64px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    background: var(--color-white);
+    padding: 10px 50px;
+    margin: 0;
+  }
+  .tagline {
+    font-weight: 400;
+    font-style:normal;
+    font-size: 16px;
+    line-height: 13.42px;
+    letter-spacing: 0px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  /* Banner Content Area */
+  .banner-content {
+    flex-direction: column;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--color-background);
+    overflow: hidden;
+  }
+
+  /* Background illustrations */
+  .banner-illustration img {
+    position: relative;
+    max-width: none;
+    height: auto;
+    width: 100%;
+  }
+
+  .banner-bottom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Main Content */
+  .banner-main-content {
+    max-width: 483px;
+  }
+
+  .main-heading {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--color-black);
+    letter-spacing: 0px;
+  }
+
+  .description {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-black);
+    margin-bottom: 32px;
+    max-width: 483px;
+  }
+
+  /* Button base style */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 41px;
+    font-weight: 400;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .btn span,
+  .btn .arrow-icon {
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+  }
+
+  /* Choose Gift button (yellow → black) */
+  .choose-gift {
+    background: var(--color-yellow);
+    color: var(--color-black);
+  }
+
+  .choose-gift::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--color-black);
+    transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 0;
+  }
+
+  .choose-gift:hover::before {
+    left: 0;
+  }
+
+  .choose-gift:hover {
+    color: #ffffff;
+  }
+
+  .choose-gift .arrow-icon {
+    filter: brightness(0);
+  }
+
+  .choose-gift:hover .arrow-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Shop Now button (black → yellow) */
+  .shop-now {
+    background: var(--color-black);
+    color: #ffffff;
+  }
+
+  .shop-now::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--color-yellow);
+    transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 0;
+  }
+
+  .shop-now:hover::before {
+    left: 0;
+  }
+
+  .shop-now:hover {
+    color: var(--color-black);
+  }
+
+  .shop-now .arrow-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  .shop-now:hover .arrow-icon {
+    filter: brightness(0);
+  }
+
+  /* Arrow icons */
+  .arrow-icon {
+    width: 24px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Bottom Banner */
+  .bottom-banner {
+    text-align: center;
+    padding: 16px 40px;
+    background: #f8f8f8;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--color-black);
+  }
+</style>
 
 
 {% schema %}
@@ -146,4 +363,3 @@
   "presets": [{ "name": "Custom Banner" }]
 }
 {% endschema %}
-
