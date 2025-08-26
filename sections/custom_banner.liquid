@@ -50,6 +50,13 @@
           <div class="banner-main-content">
             <h1 class="main-heading">The Gift Guide</h1>
             <p class="description">Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>
+              <img
+            src="{{'Frame_3.svg'|asset_url}}"
+            alt="Gift illustration"
+            class="banner-illustration-3"
+           width="376" height="264"
+            loading="lazy"
+          />
             <a href="#" class="btn btn-animated shop-now">
               <span>SHOP NOW</span>
               <img
@@ -129,7 +136,9 @@ body {
   flex: 0 0 auto;
   display: none; /* Hidden on desktop */
 }
-
+.banner-main-content .banner-illustration-3 {
+  display: none;
+}
 .menu-icon {
   width: 20px;
   height: 13px;
@@ -305,6 +314,7 @@ body {
 }
 
 .shop-now .arrow-icon {
+  margin-left: 4px;
   filter: brightness(0) invert(1);
 }
 
@@ -314,7 +324,7 @@ body {
 
 /* Arrow icons */
 .arrow-icon {
-  width: 24px;
+  width: 26px;
   height: 12px;
   flex-shrink: 0;
 }
@@ -336,45 +346,70 @@ body {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .banner-top-bar {
-    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
-  .hamburger-menu {
-    display: block; /* Show on mobile */
+  .brand-logo {
+    margin: 0 auto;
   }
-
-  .hamburger-menu .menu-icon {
-    display: block;
-  }
-
+  
   .tagline {
-    font-size: 14px;
+    display: none;
   }
-
+  .choose-gift {
+    display: none;
+  }
+  .banner-illustration  {
+    display: none;
+  }
+  .hamburger-menu {
+    display: block; 
+   
+  }
   .banner-bottom-row {
     flex-direction: column;
     text-align: center;
-    padding: 40px 20px;
-    gap: 30px;
+    
   }
 
   .banner-main-content {
-    max-width: 100%;
-    order: 2;
+    position: relative;
+    
+  }
+  .banner-main-content .description {
+    margin: 0 auto;
+    max-width: 70%;
+    
+  }
+  .banner-main-content p{
+   display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  }
+
+  .illustration-frame-1 {
+    display: none;
+  }
+  .banner-main-content  {
+    margin-top: 49px;
   }
 
   .illustration-frame-2 {
-    order: 1;
-    max-width: 100%;
-    width: 100%;
+   display: none;
   }
-
+  .banner-main-content .banner-illustration-3 {
+  display: block;
+  width: 100%;
+}
   .main-heading {
-    font-size: 42px;
+    font-size: 30px;
   }
 
   .description {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .bottom-banner {
@@ -405,11 +440,9 @@ body {
     font-size: 16px;
   }
 
-  .btn {
-    padding: 10px 30px;
-    font-size: 14px;
-  }
+ 
 }
+
 
 </style>
 
