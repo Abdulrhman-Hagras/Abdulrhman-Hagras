@@ -8,8 +8,8 @@
     <!-- Hardcoded products for assessment -->
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="1"
+      data-variant-id="1"
       data-img="{{ 'product1.png' | asset_url }}"
       data-title="Premium Leather Crossbody"
       data-price="€850.00"
@@ -42,8 +42,8 @@
 
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="2"
+      data-variant-id="2"
       data-img="{{ 'product4.png' | asset_url }}"
       data-title="Tailored Navy Suit"
       data-price="€1,200.00"
@@ -75,8 +75,8 @@
 
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="3"
+      data-variant-id="3"
       data-img="{{ 'product6.png' | asset_url }}"
       data-title="Cozy Plaid Flannel"
       data-price="€95.00"
@@ -108,8 +108,8 @@
 
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="4"
+      data-variant-id="4"
       data-img="{{ 'product2.png' | asset_url }}"
       data-title="Classic Leather Jacket"
       data-price="€650.00"
@@ -141,8 +141,8 @@
 
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="5"
+      data-variant-id="5"
       data-img="{{ 'product5.png' | asset_url }}"
       data-title="Vintage Varsity Jacket"
       data-price="€180.00"
@@ -174,8 +174,8 @@
 
     <div
       class="product-item"
-      data-product-id="{{ product.id }}"
-      data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+      data-product-id="6"
+      data-variant-id="6"
       data-img="{{ 'product3.png' | asset_url }}"
       data-title="Distressed Denim Jacket"
       data-price="€120.00"
@@ -687,7 +687,9 @@
     justify-content: center;
     z-index: 1000;
   }
-
+.close {
+  z-index: 1100;
+}
   .modal.show {
     display: flex;
     animation: fadeIn 0.3s ease;
@@ -1111,7 +1113,7 @@
   function addToShopifyOrLocal(cartItem) {
     const variantId = parseInt(cartItem.id || 0, 10);
     
-    if (variantId && variantId > 100) { // Basic validation for real Shopify IDs
+    if (variantId && variantId > 0) { // Basic validation for real Shopify IDs
         const formData = {
             'items': [{
                 'id': variantId,
