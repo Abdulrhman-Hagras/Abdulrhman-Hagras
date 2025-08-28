@@ -629,6 +629,7 @@
   (function () {
     let currentProduct = null;
     let selectedVariantId = null;
+    // These will store the index of the color and size options
     let colorOptionIndex = -1;
     let sizeOptionIndex = -1;
 
@@ -720,15 +721,15 @@
       sizeSelect.innerHTML = '<option value="">Choose your size</option>';
 
       if (!currentProduct || !currentProduct.variants || !currentProduct.options) return;
-      
+
       // Dynamically find the index for "Color" and "Size" options
-      colorOptionIndex = currentProduct.options.findIndex(option => option.toLowerCase().includes('color'));
-      sizeOptionIndex = currentProduct.options.findIndex(option => option.toLowerCase().includes('size'));
+      colorOptionIndex = currentProduct.options.findIndex((option) => option.toLowerCase().includes('color'));
+      sizeOptionIndex = currentProduct.options.findIndex((option) => option.toLowerCase().includes('size'));
 
       const uniqueColors = new Set();
       const uniqueSizes = new Set();
 
-      currentProduct.variants.forEach(variant => {
+      currentProduct.variants.forEach((variant) => {
         if (colorOptionIndex !== -1 && variant.options[colorOptionIndex]) {
           uniqueColors.add(variant.options[colorOptionIndex]);
         }
@@ -736,7 +737,7 @@
           uniqueSizes.add(variant.options[sizeOptionIndex]);
         }
       });
-      
+
       // Populate Color buttons
       uniqueColors.forEach((color) => {
         const button = document.createElement('button');
@@ -772,12 +773,14 @@
         selectedVariantId = null;
         return;
       }
-      
+
       const selectedColor = selectedColorBtn.dataset.optionValue;
 
       if (currentProduct && currentProduct.variants) {
         const foundVariant = currentProduct.variants.find((variant) => {
-          return variant.options[colorOptionIndex] === selectedColor && variant.options[sizeOptionIndex] === selectedSize;
+          return (
+            variant.options[colorOptionIndex] === selectedColor && variant.options[sizeOptionIndex] === selectedSize
+          );
         });
 
         if (foundVariant) {
