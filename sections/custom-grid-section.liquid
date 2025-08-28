@@ -5,205 +5,51 @@
 <section class="custom-grid-section">
   <h2 class="grid-title">Tisso vision in the wild</h2>
   <div class="grid-container">
-    <!-- Hardcoded products for assessment -->
-    <div
-      class="product-item"
-      data-product-id="1"
-      data-variant-id="1"
-      data-img="{{ 'product1.png' | asset_url }}"
-      data-title="Premium Leather Crossbody"
-      data-price="€850.00"
-      data-desc="Handcrafted Italian leather crossbody bag with adjustable strap and gold hardware."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product1.png' | asset_url }}"
-          alt="Product 1"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
+    
+    {%- comment -%}
+    Using specific product handles from your CSV data
+    {%- endcomment -%}
+    {%- assign product_handles = 'ocean-blue-shirt,classic-varsity-top,yellow-wool-jumper,floral-white-top,striped-silk-blouse,classic-leather-jacket' | split: ',' -%}
+    
+    {%- for handle in product_handles -%}
+      {%- assign product = all_products[handle] -%}
+      {%- if product -%}
+        <div
+          class="product-item"
+          data-product-id="{{ product.id }}"
+          data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+          data-img="{{ product.featured_image | image_url: width: 400 }}"
+          data-title="{{ product.title }}"
+          data-price="{{ product.price | money }}"
+          data-desc="{{ product.description | strip_html | truncate: 100 }}"
         >
+          <div class="product-image-wrapper">
+            <img
+              src="{{ product.featured_image | image_url: width: 400 }}"
+              alt="{{ product.title }}"
+              class="product-image"
+              loading="lazy"
+              width="400"
+              height="400"
+            >
 
-        <button
-          class="add-to-cart"
-          data-product-id="1"
-          aria-label="Add product 1 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="product-item"
-      data-product-id="2"
-      data-variant-id="2"
-      data-img="{{ 'product4.png' | asset_url }}"
-      data-title="Tailored Navy Suit"
-      data-price="€1,200.00"
-      data-desc="Classic navy blue suit with modern slim fit tailoring and premium wool blend."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product4.png' | asset_url }}"
-          alt="Product 2"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
-        >
-        <button
-          class="add-to-cart"
-          data-product-id="2"
-          aria-label="Add product 2 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="product-item"
-      data-product-id="3"
-      data-variant-id="3"
-      data-img="{{ 'product6.png' | asset_url }}"
-      data-title="Cozy Plaid Flannel"
-      data-price="€95.00"
-      data-desc="Soft cotton flannel shirt in classic red plaid pattern. Perfect for layering."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product6.png' | asset_url }}"
-          alt="Product 3"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
-        >
-        <button
-          class="add-to-cart"
-          data-product-id="3"
-          aria-label="Add product 3 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="product-item"
-      data-product-id="4"
-      data-variant-id="4"
-      data-img="{{ 'product2.png' | asset_url }}"
-      data-title="Classic Leather Jacket"
-      data-price="€650.00"
-      data-desc="Timeless black leather moto jacket with quilted details and silver hardware."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product2.png' | asset_url }}"
-          alt="Product 4"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
-        >
-        <button
-          class="add-to-cart"
-          data-product-id="4"
-          aria-label="Add product 4 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="product-item"
-      data-product-id="5"
-      data-variant-id="5"
-      data-img="{{ 'product5.png' | asset_url }}"
-      data-title="Vintage Varsity Jacket"
-      data-price="€180.00"
-      data-desc="Retro-inspired varsity jacket with contrast sleeves and embroidered details."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product5.png' | asset_url }}"
-          alt="Product 5"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
-        >
-        <button
-          class="add-to-cart"
-          data-product-id="5"
-          aria-label="Add product 5 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="product-item"
-      data-product-id="6"
-      data-variant-id="6"
-      data-img="{{ 'product3.png' | asset_url }}"
-      data-title="Distressed Denim Jacket"
-      data-price="€120.00"
-      data-desc="Oversized denim jacket with vintage wash and subtle distressing details."
-    >
-      <div class="product-image-wrapper">
-        <img
-          src="{{ 'product3.png' | asset_url }}"
-          alt="Product 6"
-          class="product-image"
-          loading="lazy"
-          width="400"
-          height="400"
-        >
-        <button
-          class="add-to-cart"
-          data-product-id="6"
-          aria-label="Add product 6 to cart"
-        >
-          <img
-            src="{{ 'add.svg' | asset_url }}"
-            alt="Add to Cart"
-            width="22"
-            height="22"
-          >
-        </button>
-      </div>
-    </div>
+            <button
+              class="add-to-cart"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              aria-label="Add {{ product.title }} to cart"
+            >
+              <img
+                src="{{ 'add.svg' | asset_url }}"
+                alt="Add to Cart"
+                width="22"
+                height="22"
+              >
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+    
   </div>
 </section>
 
@@ -220,8 +66,8 @@
       </div>
     </div>
     <div class="options">
-      <button onclick="selectColor(this)"><span>White</span></button>
       <button onclick="selectColor(this)"><span>Black</span></button>
+      <button onclick="selectColor(this)"><span>White</span></button>
     </div>
 
     <select id="sizeSelect">
@@ -230,7 +76,6 @@
       <option>S</option>
       <option>M</option>
       <option>L</option>
-      <option>XL</option>
     </select>
 
     <button class="add-cart" onclick="addToCart()" style="height: 42px">
@@ -245,6 +90,7 @@
     </button>
   </div>
 </div>
+
 
 <style>
   /* Import Jost font */
