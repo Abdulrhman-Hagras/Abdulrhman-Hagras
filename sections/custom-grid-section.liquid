@@ -9,7 +9,6 @@
     <div
       class="product-item"
       data-product-id="1"
-      data-variant-id="1"
       data-img="{{ 'product1.png' | asset_url }}"
       data-title="Premium Leather Crossbody"
       data-price="€850.00"
@@ -25,11 +24,7 @@
           height="400"
         >
 
-        <button
-          class="add-to-cart"
-          data-product-id="1"
-          aria-label="Add product 1 to cart"
-        >
+        <button class="add-to-cart" data-product-id="1">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -43,7 +38,6 @@
     <div
       class="product-item"
       data-product-id="2"
-      data-variant-id="2"
       data-img="{{ 'product4.png' | asset_url }}"
       data-title="Tailored Navy Suit"
       data-price="€1,200.00"
@@ -58,11 +52,7 @@
           width="400"
           height="400"
         >
-        <button
-          class="add-to-cart"
-          data-product-id="2"
-          aria-label="Add product 2 to cart"
-        >
+        <button class="add-to-cart" data-product-id="2">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -76,7 +66,6 @@
     <div
       class="product-item"
       data-product-id="3"
-      data-variant-id="3"
       data-img="{{ 'product6.png' | asset_url }}"
       data-title="Cozy Plaid Flannel"
       data-price="€95.00"
@@ -91,11 +80,7 @@
           width="400"
           height="400"
         >
-        <button
-          class="add-to-cart"
-          data-product-id="3"
-          aria-label="Add product 3 to cart"
-        >
+        <button class="add-to-cart" data-product-id="3">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -109,7 +94,6 @@
     <div
       class="product-item"
       data-product-id="4"
-      data-variant-id="4"
       data-img="{{ 'product2.png' | asset_url }}"
       data-title="Classic Leather Jacket"
       data-price="€650.00"
@@ -124,11 +108,7 @@
           width="400"
           height="400"
         >
-        <button
-          class="add-to-cart"
-          data-product-id="4"
-          aria-label="Add product 4 to cart"
-        >
+        <button class="add-to-cart" data-product-id="4">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -142,7 +122,6 @@
     <div
       class="product-item"
       data-product-id="5"
-      data-variant-id="5"
       data-img="{{ 'product5.png' | asset_url }}"
       data-title="Vintage Varsity Jacket"
       data-price="€180.00"
@@ -157,11 +136,7 @@
           width="400"
           height="400"
         >
-        <button
-          class="add-to-cart"
-          data-product-id="5"
-          aria-label="Add product 5 to cart"
-        >
+        <button class="add-to-cart" data-product-id="5">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -175,7 +150,6 @@
     <div
       class="product-item"
       data-product-id="6"
-      data-variant-id="6"
       data-img="{{ 'product3.png' | asset_url }}"
       data-title="Distressed Denim Jacket"
       data-price="€120.00"
@@ -190,11 +164,7 @@
           width="400"
           height="400"
         >
-        <button
-          class="add-to-cart"
-          data-product-id="6"
-          aria-label="Add product 6 to cart"
-        >
+        <button class="add-to-cart" data-product-id="6">
           <img
             src="{{ 'add.svg' | asset_url }}"
             alt="Add to Cart"
@@ -212,7 +182,13 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <div class="modal-top">
-      <img id="modalImg" src="" alt="Product" width="311" height="447">
+      <img
+        id="modalImg"
+        src=""
+        alt="Product"
+        width="311"
+        height="447"
+      >
       <div class="modal-info">
         <h3 id="modalTitle"></h3>
         <p id="modalPrice"></p>
@@ -233,7 +209,11 @@
       <option>XL</option>
     </select>
 
-    <button class="add-cart" onclick="addToCart()" style="height: 42px">
+    <button
+      class="add-cart"
+      onclick="addToCart()"
+      style="height: 42px;"
+    >
       <span>ADD TO CART </span>
       <img
         src="{{'arrow white.svg' |asset_url}}"
@@ -1027,47 +1007,79 @@
 {% endschema %}
 
 {% javascript %}
+  // Store current product for modal
   let currentProduct = null;
 
+  // Add event listeners when page loads
   document.addEventListener('DOMContentLoaded', function () {
-    // Open modal when clicking product
-    document.querySelectorAll('.product-item').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        if (e.target.closest('.add-to-cart')) return; // skip if icon clicked
-        openModal(item);
-      });
-    });
-
-    // Quick add (icon only)
+    // Add click listeners to all add-to-cart buttons
     document.querySelectorAll('.add-to-cart').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        addItemDirect(btn.closest('.product-item'));
+
+        let item = btn.closest('.product-item');
+        openModal(item.dataset.img, item.dataset.title, item.dataset.price, item.dataset.desc, item.dataset.productId);
       });
+    });
+
+    // Add click listeners to product items for full modal
+    document.querySelectorAll('.product-item').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        // Don't open modal if clicking the add-to-cart button
+        if (e.target.closest('.add-to-cart')) {
+          return;
+        }
+
+        openModal(item.dataset.img, item.dataset.title, item.dataset.price, item.dataset.desc, item.dataset.productId);
+      });
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('productModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Close modal with escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
     });
   });
 
-  function openModal(item) {
+  function openModal(img, title, price, desc, productId) {
+    const modal = document.getElementById('productModal');
+
+    // Store current product data
     currentProduct = {
-      id: item.dataset.variantId,
-      img: item.dataset.img,
-      title: item.dataset.title,
-      price: item.dataset.price,
-      desc: item.dataset.desc,
+      id: productId,
+      img: img,
+      title: title,
+      price: price,
+      desc: desc,
     };
 
-    document.getElementById('modalImg').src = currentProduct.img;
-    document.getElementById('modalTitle').innerText = currentProduct.title;
-    document.getElementById('modalPrice').innerText = currentProduct.price;
-    document.getElementById('modalDesc').innerText = currentProduct.desc;
+    // Update modal content
+    document.getElementById('modalImg').src = img;
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalPrice').innerText = price;
+    document.getElementById('modalDesc').innerText = desc;
 
-    document.getElementById('productModal').classList.add('show');
+    // Reset form
+    document.querySelectorAll('.options button').forEach((b) => b.classList.remove('active'));
+    document.getElementById('sizeSelect').selectedIndex = 0;
+
+    // Show modal
+    modal.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
-    document.getElementById('productModal').classList.remove('show');
+    const modal = document.getElementById('productModal');
+    modal.classList.remove('show');
     document.body.style.overflow = 'auto';
     currentProduct = null;
   }
@@ -1077,86 +1089,37 @@
     btn.classList.add('active');
   }
 
-  function addItemDirect(item) {
-    const cartItem = {
-      id: item.dataset.variantId,
-      title: item.dataset.title,
-      price: item.dataset.price,
-      image: item.dataset.img,
-      quantity: 1,
-    };
-    addToShopifyOrLocal(cartItem);
-  }
-
   function addToCart() {
     if (!currentProduct) return;
-    const colorBtn = document.querySelector('.options button.active');
-    const sizeSelect = document.getElementById('sizeSelect');
-    if (!colorBtn) return alert('Please select a color');
-    if (sizeSelect.selectedIndex === 0) return alert('Please select a size');
 
+    const selectedColor = document.querySelector('.options button.active');
+    const selectedSize = document.getElementById('sizeSelect');
+
+    if (!selectedColor) {
+      alert('Please select a color');
+      return;
+    }
+
+    if (selectedSize.selectedIndex === 0) {
+      alert('Please select a size');
+      return;
+    }
+
+    // Simulate adding to cart
     const cartItem = {
       id: currentProduct.id,
       title: currentProduct.title,
       price: currentProduct.price,
+      color: selectedColor.textContent,
+      size: selectedSize.value,
       image: currentProduct.img,
-      color: colorBtn.innerText.trim(),
-      size: sizeSelect.value,
-      quantity: 1,
     };
-    addToShopifyOrLocal(cartItem);
+
+    console.log('Added to cart:', cartItem);
+    alert(
+      `Successfully Added to cart!\n\n${cartItem.title}\nColor: ${cartItem.color}\nSize: ${cartItem.size}\nPrice: ${cartItem.price}`
+    );
+
     closeModal();
-  }
-
-  function addToShopifyOrLocal(cartItem) {
-    const variantId = parseInt(cartItem.id || 0, 10);
-    if (variantId) {
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: 1 }),
-      })
-        .then((r) => {
-          if (!r.ok) throw r;
-          return r.json();
-        })
-        .then(() => showToast(cartItem, 'Successfully added'))
-        .catch(() => {
-          addToLocalCart(cartItem);
-          showToast(cartItem, 'Added to cart');
-        });
-    } else {
-      addToLocalCart(cartItem);
-      showToast(cartItem, 'Added to cart');
-    }
-  }
-
-  function addToLocalCart(item) {
-    const key = 'cg_cart';
-    const cart = JSON.parse(localStorage.getItem(key) || '[]');
-    const existing = cart.find((c) => c.id === item.id && c.color === item.color && c.size === item.size);
-    if (existing) existing.quantity += 1;
-    else cart.push(item);
-    localStorage.setItem(key, JSON.stringify(cart));
-  }
-
-  function showToast(item, message) {
-    const toast = document.createElement('div');
-    toast.className = 'cg-toast';
-    toast.innerHTML = `
-    <div class="cg-toast-image"><img src="${item.image}" alt="${item.title}" /></div>
-    <div class="cg-toast-info">
-      <strong>${message}</strong>
-      <div>${item.title}</div>
-      <div style="opacity:.8; margin-top:4px">${item.price}</div>
-    </div>
-    <div class="cg-toast-actions"><a href="/cart" class="cg-view-cart">View Cart</a></div>
-  `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 400);
-    }, 4000);
   }
 {% endjavascript %}
