@@ -23,7 +23,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
 
         <button
           class="add-to-cart"
@@ -35,7 +35,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -57,7 +57,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
         <button
           class="add-to-cart"
           data-product-id="2"
@@ -68,7 +68,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -90,7 +90,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
         <button
           class="add-to-cart"
           data-product-id="3"
@@ -101,7 +101,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -123,7 +123,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
         <button
           class="add-to-cart"
           data-product-id="4"
@@ -134,7 +134,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -156,7 +156,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
         <button
           class="add-to-cart"
           data-product-id="5"
@@ -167,7 +167,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -189,7 +189,7 @@
           loading="lazy"
           width="400"
           height="400"
-        />
+        >
         <button
           class="add-to-cart"
           data-product-id="6"
@@ -200,7 +200,7 @@
             alt="Add to Cart"
             width="22"
             height="22"
-          />
+          >
         </button>
       </div>
     </div>
@@ -212,7 +212,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <div class="modal-top">
-      <img id="modalImg" src="" alt="Product" width="311" height="447" />
+      <img id="modalImg" src="" alt="Product" width="311" height="447">
       <div class="modal-info">
         <h3 id="modalTitle"></h3>
         <p id="modalPrice"></p>
@@ -241,11 +241,10 @@
         class="arrow-icon"
         width="26"
         height="12"
-      />
+      >
     </button>
   </div>
 </div>
-
 
 <style>
   /* Import Jost font */
@@ -1028,80 +1027,136 @@
 {% endschema %}
 
 {% javascript %}
+  let currentProduct = null;
 
+  document.addEventListener('DOMContentLoaded', function () {
+    // Open modal when clicking product
+    document.querySelectorAll('.product-item').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.add-to-cart')) return; // skip if icon clicked
+        openModal(item);
+      });
+    });
 
-const variantId = parseInt(cartItem.id || 0, 10);
+    // Quick add (icon only)
+    document.querySelectorAll('.add-to-cart').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItemDirect(btn.closest('.product-item'));
+      });
+    });
+  });
 
+  function openModal(item) {
+    currentProduct = {
+      id: item.dataset.variantId,
+      img: item.dataset.img,
+      title: item.dataset.title,
+      price: item.dataset.price,
+      desc: item.dataset.desc,
+    };
 
-if (variantId) {
-fetch('/cart/add.js', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-body: JSON.stringify({ id: variantId, quantity: 1 })
-})
-.then((res) => {
-if (!res.ok) return res.json().then(err => { throw err; });
-return res.json();
-})
-.then((data) => {
-console.log('Shopify add response', data);
-showToast({ title: cartItem.title, price: cartItem.price, image: cartItem.image, message: 'Successfully added' });
-})
-.catch((err) => {
-console.warn('Shopify add failed, falling back to local cart', err);
-addToLocalCart(cartItem);
-showToast({ title: cartItem.title, price: cartItem.price, image: cartItem.image, message: 'Added to cart' });
-});
-} else {
-addToLocalCart(cartItem);
-showToast({ title: cartItem.title, price: cartItem.price, image: cartItem.image, message: 'Added to cart' });
-}
+    document.getElementById('modalImg').src = currentProduct.img;
+    document.getElementById('modalTitle').innerText = currentProduct.title;
+    document.getElementById('modalPrice').innerText = currentProduct.price;
+    document.getElementById('modalDesc').innerText = currentProduct.desc;
 
+    document.getElementById('productModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
 
-closeModal();
-}
+  function closeModal() {
+    document.getElementById('productModal').classList.remove('show');
+    document.body.style.overflow = 'auto';
+    currentProduct = null;
+  }
 
+  function selectColor(btn) {
+    document.querySelectorAll('.options button').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
 
-function addToLocalCart(item) {
-const key = 'cg_cart';
-const cart = JSON.parse(localStorage.getItem(key) || '[]');
+  function addItemDirect(item) {
+    const cartItem = {
+      id: item.dataset.variantId,
+      title: item.dataset.title,
+      price: item.dataset.price,
+      image: item.dataset.img,
+      quantity: 1,
+    };
+    addToShopifyOrLocal(cartItem);
+  }
 
+  function addToCart() {
+    if (!currentProduct) return;
+    const colorBtn = document.querySelector('.options button.active');
+    const sizeSelect = document.getElementById('sizeSelect');
+    if (!colorBtn) return alert('Please select a color');
+    if (sizeSelect.selectedIndex === 0) return alert('Please select a size');
 
-// try to find identical item (same id, color, size)
-const existing = cart.find(c => c.id === item.id && c.color === item.color && c.size === item.size);
-if (existing) {
-existing.quantity = (existing.quantity || 0) + (item.quantity || 1);
-} else {
-cart.push(item);
-}
+    const cartItem = {
+      id: currentProduct.id,
+      title: currentProduct.title,
+      price: currentProduct.price,
+      image: currentProduct.img,
+      color: colorBtn.innerText.trim(),
+      size: sizeSelect.value,
+      quantity: 1,
+    };
+    addToShopifyOrLocal(cartItem);
+    closeModal();
+  }
 
+  function addToShopifyOrLocal(cartItem) {
+    const variantId = parseInt(cartItem.id || 0, 10);
+    if (variantId) {
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: 1 }),
+      })
+        .then((r) => {
+          if (!r.ok) throw r;
+          return r.json();
+        })
+        .then(() => showToast(cartItem, 'Successfully added'))
+        .catch(() => {
+          addToLocalCart(cartItem);
+          showToast(cartItem, 'Added to cart');
+        });
+    } else {
+      addToLocalCart(cartItem);
+      showToast(cartItem, 'Added to cart');
+    }
+  }
 
-localStorage.setItem(key, JSON.stringify(cart));
-}
+  function addToLocalCart(item) {
+    const key = 'cg_cart';
+    const cart = JSON.parse(localStorage.getItem(key) || '[]');
+    const existing = cart.find((c) => c.id === item.id && c.color === item.color && c.size === item.size);
+    if (existing) existing.quantity += 1;
+    else cart.push(item);
+    localStorage.setItem(key, JSON.stringify(cart));
+  }
 
-
-function showToast({ title, price, image, message }) {
-const toast = document.createElement('div');
-toast.className = 'cg-toast';
-toast.innerHTML = `
-<div class="cg-toast-image"><img src="${image}" alt="${title}" /></div>
-<div class="cg-toast-info">
-<strong>${message}</strong>
-<div>${title}</div>
-<div style="opacity:.8; margin-top:4px">${price}</div>
-</div>
-<div class="cg-toast-actions"><a href="/cart" class="cg-view-cart">View Cart</a></div>
-`;
-
-
-document.body.appendChild(toast);
-// force a tick for animation
-setTimeout(() => toast.classList.add('show'), 10);
-
-
-setTimeout(() => {
-toast.classList.remove('show');
-setTimeout(() => toast.remove(), 400);
-}, 4000);
-}
+  function showToast(item, message) {
+    const toast = document.createElement('div');
+    toast.className = 'cg-toast';
+    toast.innerHTML = `
+    <div class="cg-toast-image"><img src="${item.image}" alt="${item.title}" /></div>
+    <div class="cg-toast-info">
+      <strong>${message}</strong>
+      <div>${item.title}</div>
+      <div style="opacity:.8; margin-top:4px">${item.price}</div>
+    </div>
+    <div class="cg-toast-actions"><a href="/cart" class="cg-view-cart">View Cart</a></div>
+  `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
+  }
 {% endjavascript %}
