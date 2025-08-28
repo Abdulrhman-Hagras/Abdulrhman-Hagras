@@ -597,27 +597,25 @@
 
 {% javascript %}
   let currentProduct = null;
-  let currentProductVariants = [];
   let selectedVariantId = null;
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Open modal when clicking product item
     document.querySelectorAll('.product-item').forEach((item) => {
       item.addEventListener('click', (e) => {
+        // Stop the default link behavior to prevent navigating away
+        e.preventDefault(); 
+        
         // Prevent modal from opening if the quick-add button is clicked
         if (e.target.closest('.add-to-cart')) {
-          e.preventDefault();
           e.stopPropagation();
           addItemDirect(item);
           return;
         }
-
-        e.preventDefault();
+        
         openModal(item);
       });
     });
 
-    // Handle quick add button click
     document.querySelectorAll('.add-to-cart').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -628,15 +626,18 @@
   });
 
   function openModal(item) {
-    const productUrl = item.getAttribute('href');
+    // Get product handle to fetch full product data
+    const productHandle = item.href.split('/').pop().split('?')[0];
 
-    // Fetch product data from Shopify
-    fetch(`${productUrl}.js`)
-      .then(response => response.json())
+    // Fetch product data from Shopify's API
+    fetch(`/products/${productHandle}.js`)
+      .then(response => {
+        if (!response.ok) throw new Error('Product not found.');
+        return response.json();
+      })
       .then(product => {
         currentProduct = product;
-        currentProductVariants = product.variants;
-
+        
         document.getElementById('modalImg').src = item.dataset.img;
         document.getElementById('modalTitle').innerText = product.title;
         document.getElementById('modalPrice').innerText = new Intl.NumberFormat(
@@ -647,7 +648,7 @@
         ).format(product.price / 100);
         document.getElementById('modalDesc').innerText = item.dataset.desc;
 
-        // Populate color and size options
+        // Populate dynamic options
         populateOptions();
         
         document.getElementById('productModal').classList.add('show');
@@ -655,7 +656,7 @@
       })
       .catch(error => {
         console.error('Error fetching product data:', error);
-        alert('Could not load product details. Please try again.');
+        showToast({title: item.dataset.title}, 'Could not load product details. Please try again.');
       });
   }
 
@@ -663,28 +664,26 @@
     document.getElementById('productModal').classList.remove('show');
     document.body.style.overflow = 'auto';
     currentProduct = null;
-    currentProductVariants = [];
     selectedVariantId = null;
     document.getElementById('colorOptions').innerHTML = '';
-    document.getElementById('sizeSelect').innerHTML = '<option>Choose your size</option>';
+    document.getElementById('sizeSelect').innerHTML = '<option value="">Choose your size</option>';
   }
 
   function populateOptions() {
     const colorOptionsDiv = document.getElementById('colorOptions');
     const sizeSelect = document.getElementById('sizeSelect');
     
-    // Clear previous options
     colorOptionsDiv.innerHTML = '';
     sizeSelect.innerHTML = '<option value="">Choose your size</option>';
 
     if (!currentProduct) return;
 
-    // Get unique option values
-    const availableColors = [...new Set(currentProductVariants.map(v => v.option1).filter(Boolean))];
-    const availableSizes = [...new Set(currentProductVariants.map(v => v.option2).filter(Boolean))];
+    // Use a Set to get unique option values
+    const uniqueColors = new Set(currentProduct.variants.map(v => v.option1).filter(Boolean));
+    const uniqueSizes = new Set(currentProduct.variants.map(v => v.option2).filter(Boolean));
     
-    // Create color buttons
-    availableColors.forEach(color => {
+    // Create color buttons for option1
+    uniqueColors.forEach(color => {
       const button = document.createElement('button');
       button.innerText = color;
       button.dataset.optionValue = color;
@@ -692,8 +691,8 @@
       colorOptionsDiv.appendChild(button);
     });
     
-    // Create size options
-    availableSizes.forEach(size => {
+    // Create size options for option2
+    uniqueSizes.forEach(size => {
       const option = document.createElement('option');
       option.value = size;
       option.innerText = size;
@@ -716,10 +715,8 @@
     
     if (selectedColorBtn && selectedSize) {
       const selectedColor = selectedColorBtn.dataset.optionValue;
-      const foundVariant = currentProductVariants.find(variant => {
-        const option1Matches = !variant.option1 || variant.option1 === selectedColor;
-        const option2Matches = !variant.option2 || variant.option2 === selectedSize;
-        return option1Matches && option2Matches;
+      const foundVariant = currentProduct.variants.find(variant => {
+        return variant.option1 === selectedColor && variant.option2 === selectedSize;
       });
       
       if (foundVariant) {
@@ -768,12 +765,12 @@
     })
     .then(data => {
         console.log('Successfully added to cart:', data);
-        showToast(currentProduct, 'Successfully added to cart');
+        showToast({title: currentProduct.title, image: document.getElementById('modalImg').src, price: document.getElementById('modalPrice').innerText}, 'Successfully added to cart');
         closeModal();
     })
     .catch(error => {
         console.error('Cart add error:', error);
-        showToast(currentProduct, `Error: ${error.message || 'Could not add to cart'}`);
+        showToast({title: currentProduct.title}, `Error: ${error.message || 'Could not add to cart'}`);
     });
   }
 
