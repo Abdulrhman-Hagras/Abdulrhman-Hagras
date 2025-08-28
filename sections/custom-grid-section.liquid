@@ -849,7 +849,7 @@
 
     function showToast(item, message) {
       const container = document.getElementById('toast-container');
-      if (!container) return;
+      if (!container) return; // Exit if toast container not found
 
       const toast = document.createElement('div');
       toast.className = 'cg-toast';
