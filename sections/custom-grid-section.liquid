@@ -631,27 +631,33 @@
     let selectedVariantId = null;
 
     document.addEventListener('DOMContentLoaded', function () {
+      // Event listener for opening the modal on product item click
       document.querySelectorAll('.product-item').forEach((item) => {
         item.addEventListener('click', (e) => {
+          // Check if the click was on the specific 'open-popup' button
           if (e.target.closest('.open-popup-modal')) {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevents the parent 'product-item' click from firing
             openModal(item);
             return;
           }
+          // This is for clicks on the image or other parts of the product card
           openModal(item);
         });
       });
 
+      // Event listener for closing modal
       const closeBtn = document.getElementById('closeModalBtn');
       if (closeBtn) {
         closeBtn.addEventListener('click', closeModal);
       }
 
+      // Event listener for add to cart button
       const addToCartBtn = document.getElementById('addToCartBtn');
       if (addToCartBtn) {
         addToCartBtn.addEventListener('click', addToCart);
       }
 
+      // Close modal when clicking outside
       document.getElementById('productModal').addEventListener('click', function (e) {
         if (e.target === this) {
           closeModal();
@@ -666,6 +672,7 @@
         return;
       }
 
+      // Fetch full product data to get all variants and options
       fetch(`/products/${productHandle}.js`)
         .then((response) => {
           if (!response.ok) throw new Error('Product data not found.');
@@ -674,6 +681,7 @@
         .then((product) => {
           currentProduct = product;
 
+          // Populate modal with product info
           document.getElementById('modalImg').src = item.dataset.img;
           document.getElementById('modalTitle').innerText = product.title;
           document.getElementById('modalPrice').innerText = new Intl.NumberFormat('en-US', {
@@ -682,6 +690,7 @@
           }).format(product.price / 100);
           document.getElementById('modalDesc').innerText = item.dataset.desc;
 
+          // Populate options dynamically based on fetched product data
           populateOptions();
 
           document.getElementById('productModal').classList.add('show');
@@ -698,57 +707,43 @@
       document.body.style.overflow = 'auto';
       currentProduct = null;
       selectedVariantId = null;
+      // Clear dynamic options
       document.getElementById('colorOptions').innerHTML = '';
       document.getElementById('sizeSelect').innerHTML = '<option value="">Choose your size</option>';
     }
 
     function populateOptions() {
-      const colorSelect = document.getElementById('sizeSelect'); // Swapped to sizeSelect for color
-      const sizeButtonsDiv = document.getElementById('colorOptions'); // Swapped to colorOptions for size
+      const colorOptionsDiv = document.getElementById('colorOptions');
+      const sizeSelect = document.getElementById('sizeSelect');
 
-      colorSelect.innerHTML = '<option value="">Choose your color</option>';
-      sizeButtonsDiv.innerHTML = '';
+      // Clear previous options
+      colorOptionsDiv.innerHTML = '';
+      sizeSelect.innerHTML = '<option value="">Choose your size</option>';
 
       if (!currentProduct || !currentProduct.variants) return;
 
-      const uniqueColors = new Set();
-      const uniqueSizes = new Set();
+      // Use Set to get unique values for the first two options (e.g., Color, Size)
+      const uniqueColors = new Set(currentProduct.variants.map((v) => v.option1).filter(Boolean));
+      const uniqueSizes = new Set(currentProduct.variants.map((v) => v.option2).filter(Boolean));
 
-      currentProduct.variants.forEach(variant => {
-        if (variant.option1) {
-          if (currentProduct.options[0].toLowerCase() === 'color') {
-            uniqueColors.add(variant.option1);
-          } else if (currentProduct.options[0].toLowerCase() === 'size') {
-            uniqueSizes.add(variant.option1);
-          }
-        }
-        if (variant.option2) {
-          if (currentProduct.options[1].toLowerCase() === 'color') {
-            uniqueColors.add(variant.option2);
-          } else if (currentProduct.options[1].toLowerCase() === 'size') {
-            uniqueSizes.add(variant.option2);
-          }
-        }
-      });
-      
-      // Create size buttons
-      uniqueSizes.forEach((size) => {
-        const button = document.createElement('button');
-        button.innerHTML = `<span>${size}</span>`;
-        button.dataset.optionValue = size;
-        button.addEventListener('click', () => selectOption(button, 'size'));
-        sizeButtonsDiv.appendChild(button);
-      });
-
-      // Create color options for dropdown
+      // Create color buttons for option1
       uniqueColors.forEach((color) => {
-        const option = document.createElement('option');
-        option.value = color;
-        option.innerText = color;
-        colorSelect.appendChild(option);
+        const button = document.createElement('button');
+        button.innerHTML = `<span>${color}</span>`;
+        button.dataset.optionValue = color;
+        button.addEventListener('click', () => selectOption(button, 'color'));
+        colorOptionsDiv.appendChild(button);
       });
 
-      colorSelect.addEventListener('change', updateSelectedVariant);
+      // Create size options for option2
+      uniqueSizes.forEach((size) => {
+        const option = document.createElement('option');
+        option.value = size;
+        option.innerText = size;
+        sizeSelect.appendChild(option);
+      });
+
+      sizeSelect.addEventListener('change', updateSelectedVariant);
     }
 
     function selectOption(btn, type) {
@@ -759,17 +754,13 @@
     }
 
     function updateSelectedVariant() {
-      const selectedSizeBtn = document.querySelector('#colorOptions button.active');
-      const selectedColor = document.getElementById('sizeSelect').value;
+      const selectedColorBtn = document.querySelector('#colorOptions button.active');
+      const selectedSize = document.getElementById('sizeSelect').value;
 
-      if (selectedSizeBtn && selectedColor) {
-        const selectedSize = selectedSizeBtn.dataset.optionValue;
-        
-        const sizeOptionIndex = currentProduct.options.findIndex(option => option.toLowerCase() === 'size') + 1;
-        const colorOptionIndex = currentProduct.options.findIndex(option => option.toLowerCase() === 'color') + 1;
-        
+      if (selectedColorBtn && selectedSize) {
+        const selectedColor = selectedColorBtn.dataset.optionValue;
         const foundVariant = currentProduct.variants.find((variant) => {
-          return variant[`option${sizeOptionIndex}`] === selectedSize && variant[`option${colorOptionIndex}`] === selectedColor;
+          return variant.option1 === selectedColor && variant.option2 === selectedSize;
         });
 
         if (foundVariant) {
@@ -843,7 +834,7 @@
 
     function showToast(item, message) {
       const container = document.getElementById('toast-container');
-      if (!container) return;
+      if (!container) return; // Exit if toast container not found
 
       const toast = document.createElement('div');
       toast.className = 'cg-toast';
