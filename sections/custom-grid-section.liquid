@@ -28,13 +28,12 @@
               height="400"
             >
             <button
-              class="add-to-cart"
-              data-variant-id="{{ variant.id }}"
+              class="open-popup-modal"
               aria-label="Add {{ product.title }} to cart"
             >
               <img
                 src="{{ 'add.svg' | asset_url }}"
-                alt="Add to Cart"
+                alt="details"
                 width="22"
                 height="22"
               >
@@ -161,7 +160,7 @@
     transition: transform 0.4s ease;
   }
 
-  .add-to-cart {
+  .open-popup-modal {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -174,12 +173,12 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  .product-item:hover .add-to-cart {
+  .product-item:hover .open-popup-modal {
     opacity: 1;
     transform: scale(1);
   }
 
-  .add-to-cart img {
+  .open-popup-modal img {
     width: 32px;
     /* adjust to your preferred size */
     height: 32px;
@@ -480,14 +479,14 @@
       height: 200px;
     }
 
-    .add-to-cart {
+    .open-popup-modal {
       width: 40px;
       height: 40px;
       top: 15px;
       right: 15px;
     }
 
-    .add-to-cart::after {
+    .open-popup-modal::after {
       font-size: 20px;
     }
 
@@ -553,8 +552,8 @@
     // Event listener for opening the modal on product item click
     document.querySelectorAll('.product-item').forEach((item) => {
       item.addEventListener('click', (e) => {
-        // Check if the click was on the specific 'add-to-cart' button
-        if (e.target.closest('.add-to-cart')) {
+        // Check if the click was on the specific 'open-popup' button
+        if (e.target.closest('.open-popup-modal')) {
           e.stopPropagation(); // Prevents the parent 'product-item' click from firing
           openModal(item);
           return;
@@ -722,60 +721,6 @@
       .catch((error) => {
         console.error('Cart add error:', error);
         showToast({ title: currentProduct.title }, `Error: ${error.message || 'Could not add to cart'}`);
-      });
-  }
-
-  function addItemDirect(item) {
-    const variantId = parseInt(item.dataset.variantId || '0', 10);
-    const title = item.dataset.title;
-    const img = item.dataset.img;
-    const price = item.dataset.price;
-
-    if (!variantId || variantId <= 0) {
-      console.error('Invalid variant ID for direct add:', variantId);
-      return;
-    }
-
-    const formData = {
-      items: [
-        {
-          id: variantId,
-          quantity: 1,
-        },
-      ],
-    };
-
-    fetch('/cart/add.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((err) => Promise.reject(err));
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Successfully added to cart:', data);
-        const toastItem = {
-          title: title,
-          image: img,
-          price: price,
-        };
-        showToast(toastItem, 'Successfully added to cart');
-      })
-      .catch((error) => {
-        console.error('Cart add error:', error);
-        const toastItem = {
-          title: title,
-          image: img,
-          price: price,
-        };
-        showToast(toastItem, `Error: ${error.message || 'Could not add to cart'}`);
       });
   }
 
