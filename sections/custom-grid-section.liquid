@@ -181,17 +181,20 @@
 <div class="modal" id="productModal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <img
-      id="modalImg"
-      src=""
-      alt="Product"
-      width="311"
-      height="447"
-    >
-    <h3 id="modalTitle"></h3>
-    <p id="modalPrice"></p>
-    <p id="modalDesc"></p>
-
+    <div class="modal-top">
+      <img
+        id="modalImg"
+        src=""
+        alt="Product"
+        width="311"
+        height="447"
+      >
+      <div class="modal-info">
+        <h3 id="modalTitle"></h3>
+        <p id="modalPrice"></p>
+        <p id="modalDesc"></p>
+      </div>
+    </div>
     <div class="options">
       <button onclick="selectColor(this)"><span>White</span></button>
       <button onclick="selectColor(this)"><span>Black</span></button>
@@ -206,14 +209,21 @@
       <option>XL</option>
     </select>
 
-    <button class="add-cart" onclick="addToCart()"><span>ADD TO CART</span></button>
+    <button class="add-cart" onclick="addToCart()">
+      <span>ADD TO CART </span>
+      <img
+        src="{{'arrow white.svg' |asset_url}}"
+        alt="Arrow"
+        class="arrow-icon"
+        width="26"
+        height="12"
+      >
+    </button>
   </div>
 </div>
 
 <style>
   /* Import Jost font */
-  @import url('https://fonts.googleapis.com/css2?family=Lustria&display=swap');
-
   @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
   :root {
@@ -691,7 +701,6 @@
   }
 
   .modal-content img {
-    width: 100%;
     height: 250px;
     object-fit: cover;
     border-radius: 0;
@@ -896,7 +905,6 @@
     }
 
     .options {
-      flex-direction: column;
       align-items: center;
     }
 
@@ -958,6 +966,28 @@
     #modalPrice {
       font-size: 18px;
     }
+  }
+  .modal-top {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    align-items: flex-start; /* top-align image and text */
+    gap: 20px; /* spacing between image and text */
+  }
+
+  .modal-top img {
+    /* adjust as needed */
+
+    width: 50%;
+  }
+
+  .modal-info {
+    flex: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
   }
 </style>
 
