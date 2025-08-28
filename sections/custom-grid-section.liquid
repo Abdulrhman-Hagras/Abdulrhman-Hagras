@@ -548,21 +548,20 @@
   let currentProduct = null;
   let selectedVariantId = null;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    // Event listener for opening the modal on product item click
-    document.querySelectorAll('.product-item').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        // Check if the click was on the specific 'open-popup' button
-        if (e.target.closest('.open-popup-modal')) {
-          e.stopPropagation(); // Prevents the parent 'product-item' click from firing
-          openModal(item);
-          return;
-        }
-        // This is for clicks on the image or other parts of the product card
+document.addEventListener('DOMContentLoaded', function () {
+  // Event listener ONLY for the popup button
+  document.querySelectorAll('.open-popup-modal').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const item = btn.closest('.product-item');
+      if (item) {
         openModal(item);
-      });
+      }
     });
   });
+});
 
   function openModal(item) {
     const productHandle = item.dataset.productHandle;
